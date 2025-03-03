@@ -60,17 +60,23 @@ class ExpenseAnalyzer:
             categories[categoria] += monto
 
         return categories
+    
+    def print_expense_report(self):
+        """Imprime un reporte en consola con el total de gastos por categoría."""
+        totals = self.total_by_category()
+        total_general = sum(totals.values())
+
+        print("\n========== REPORTE DE GASTOS ==========")
+        for category, amount in totals.items():
+            print(f"{category:<20} | ₡{amount:,.2f}")
         
+        print("---------------------------------------")
+        print(f"{'TOTAL GENERAL':<20} | ₡{total_general:,.2f}")
+        print("=======================================\n")
+
+        
+
 if __name__ == "__main__":
     analyzer = ExpenseAnalyzer('file.csv')
-
-    # Etapa 1: Leer los datos
-    print("Datos completos:")
-    all_data = analyzer.read_data()
-    for row in all_data:
-        print(row)
-
-    # Etapa 2: Calcular totales por categoría
-    print("\nTotales por categoría:")
-    totals = analyzer.total_by_category()
-    print(totals)
+   
+    analyzer.print_expense_report()
