@@ -45,9 +45,32 @@ class ExpenseAnalyzer:
             print(f"Error inesperado: {e}")
             return []
         
+    def total_by_category(self) -> Dict[str, float]:
+        """Calcula el total de gastos por categoría."""
+        categories = {}
+        if not self.data:  # Asegurarse de que los datos estén cargados
+            self.read_data()
+
+        for row in self.data:
+            categoria = row.get('categoría', '')
+            monto = row['monto']  # Ya está convertido a float
+
+            if categoria not in categories:
+                categories[categoria] = 0
+            categories[categoria] += monto
+
+        return categories
+        
 if __name__ == "__main__":
     analyzer = ExpenseAnalyzer('file.csv')
+
+    # Etapa 1: Leer los datos
     print("Datos completos:")
     all_data = analyzer.read_data()
     for row in all_data:
         print(row)
+
+    # Etapa 2: Calcular totales por categoría
+    print("\nTotales por categoría:")
+    totals = analyzer.total_by_category()
+    print(totals)
