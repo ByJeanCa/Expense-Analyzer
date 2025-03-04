@@ -18,6 +18,10 @@ class ExpenseAnalyzer:
             with open(self.file_path, 'r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
 
+                missing_columns = self.required_columns - set(reader.fieldnames or [])
+                if missing_columns:
+                    raise ValueError(f"Error: Missing required columns: {', '.join(missing_columns)}")
+
                 for row in reader:
                     # Limpiar y convertir monto a float
                     monto = row.get('monto', '0').strip().replace(',', '.')
@@ -127,7 +131,8 @@ class ExpenseAnalyzer:
 
 
 if __name__ == "__main__":
-    analyzer = ExpenseAnalyzer('file.csv')
+
+    analyzer = ExpenseAnalyzer('file.csv')#Name/path of the csv file
 
     user_budget = float(input("Enter your monthly budget: "))
     analyzer.set_monthly_budget(user_budget)
