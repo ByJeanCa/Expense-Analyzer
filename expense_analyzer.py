@@ -90,13 +90,49 @@ class ExpenseAnalyzer:
 
         return total_expenses, budget  # Returns values for further use
 
+    def export_report(self, file_name: Optional[str] = None, file_format: str = "csv"):
+        """Exports the report to a CSV or TXT file."""
+        totals = self.total_by_category()
+        total_expenses = sum(totals.values())
 
+        # Set default filename
+        if not file_name:
+            file_name = f"expense_report.{file_format}"
 
+        try:
+            if file_format == "csv":
+                with open(file_name, "w", encoding="utf-8", newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(["Category", "Amount"])
+                    for category, amount in totals.items():
+                        writer.writerow([category, f"₡{amount:,.2f}"])
+                    writer.writerow(["TOTAL EXPENSES", f"₡{total_expenses:,.2f}"])
+                print(f"✅ Report successfully saved as '{file_name}' (CSV format).")
 
-        
+            elif file_format == "txt":
+                with open(file_name, "w", encoding="utf-8") as file:
+                    file.write("========== EXPENSE REPORT ==========\n")
+                    for category, amount in totals.items():
+                        file.write(f"{category:<20} | ₡{amount:,.2f}\n")
+                    file.write("---------------------------------------\n")
+                    file.write(f"{'TOTAL EXPENSES':<20} | ₡{total_expenses:,.2f}\n")
+                    file.write("=======================================\n")
+                print(f"✅ Report successfully saved as '{file_name}' (TXT format).")
+
+            else:
+                print("❌ Error: Unsupported format. Use 'csv' or 'txt'.")
+
+        except Exception as e:
+            print(f"❌ Error saving file: {e}")
+
 
 if __name__ == "__main__":
     analyzer = ExpenseAnalyzer('file.csv')
-   
+
     user_budget = float(input("Enter your monthly budget: "))
     analyzer.set_monthly_budget(user_budget)
+
+    # Ask user for export format
+    format_choice = input("Do you want to export the report? (csv/txt/no): ").strip().lower()
+    if format_choice in ["csv", "txt"]:
+        analyzer.export_report(file_format=format_choice)
