@@ -6,6 +6,7 @@ class ExpenseAnalyzer:
     def __init__(self, file_path: str):
         self.file_path = file_path
         self.data = []  # Almacenar los datos leídos para reutilizarlos
+        self.required_columns = {"categoría", "monto"}  # ✅ Define las columnas requeridas
 
     def read_data(self, filter_column: Optional[str] = None, 
                   filter_value: Optional[str] = None) -> List[dict]:
@@ -132,7 +133,7 @@ class ExpenseAnalyzer:
 
 if __name__ == "__main__":
 
-    analyzer = ExpenseAnalyzer('file.csv')#Name/path of the csv file
+    analyzer = ExpenseAnalyzer('expenses_sample.csv')#Name/path of the csv file
 
     user_budget = float(input("Enter your monthly budget: "))
     analyzer.set_monthly_budget(user_budget)
