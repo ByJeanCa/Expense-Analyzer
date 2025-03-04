@@ -17,7 +17,6 @@ class ExpenseAnalyzer:
 
             with open(self.file_path, 'r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
-                print(f"Columnas: {reader.fieldnames}")
 
                 for row in reader:
                     # Limpiar y convertir monto a float
@@ -74,9 +73,30 @@ class ExpenseAnalyzer:
         print(f"{'TOTAL GENERAL':<20} | ₡{total_general:,.2f}")
         print("=======================================\n")
 
+        return total_general
+
+
+    def set_monthly_budget(self, budget: float):
+        """Sets a monthly budget and alerts if expenses exceed it."""
+        total_expenses = self.print_expense_report()
+        
+        print(f"\nYour monthly budget: ₡{budget:,.2f}")
+        print(f"Total expenses: ₡{total_expenses:,.2f}")
+
+        if total_expenses >= budget:
+            print("\n⚠️ ALERT: Your expenses have exceeded the budget! ⚠️\n")
+        else:
+            print("\n✅ You are within your budget. Good job!\n")
+
+        return total_expenses, budget  # Returns values for further use
+
+
+
+
         
 
 if __name__ == "__main__":
     analyzer = ExpenseAnalyzer('file.csv')
    
-    analyzer.print_expense_report()
+    user_budget = float(input("Enter your monthly budget: "))
+    analyzer.set_monthly_budget(user_budget)
