@@ -66,16 +66,18 @@ class ExpenseAnalyzer:
         return categories
     
     def print_expense_report(self):
-        """Imprime un reporte en consola con el total de gastos por categoría."""
+        """Imprime un reporte en consola con el total de gastos por categoría y porcentajes."""
         totals = self.total_by_category()
+        percentages = self.category_percentages()
         total_general = sum(totals.values())
 
         print("\n========== REPORTE DE GASTOS ==========")
         for category, amount in totals.items():
-            print(f"{category:<20} | ₡{amount:,.2f}")
-        
+            percentage = percentages.get(category, 0)
+            print(f"{category:<20} | ₡{amount:,.2f} | {percentage:.2f}%")
+     
         print("---------------------------------------")
-        print(f"{'TOTAL GENERAL':<20} | ₡{total_general:,.2f}")
+        print(f"{'TOTAL GENERAL':<20} | ₡{total_general:,.2f} | 100.00%")
         print("=======================================\n")
 
         return total_general
@@ -129,6 +131,16 @@ class ExpenseAnalyzer:
 
         except Exception as e:
             print(f"❌ Error saving file: {e}")
+
+    def category_percentages(self) -> Dict[str, float]:
+        """Calcula el porcentaje de gastos por categoría respecto al total."""
+        totals = self.total_by_category()
+        total_expenses = sum(totals.values())
+     
+        if total_expenses == 0:  # Evitar división por cero
+            return {category: 0.0 for category in totals}
+     
+        return {category: (amount / total_expenses) * 100 for category, amount in totals.items()}
 
 
 if __name__ == "__main__":
